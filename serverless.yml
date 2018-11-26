@@ -1,6 +1,6 @@
 # serverless.yml
 
-service: test-project-1
+service: Express-Serverless-REST-API-Base-Project
 
 plugins:
   - serverless-offline

@@ -1,4 +1,4 @@
-# test_project_1
+# Express-Serverless-REST-API-Base-Project
 This project showcases how to build a REST API using Serverless and Express framework.
 Using Expresss allows us to easily move the service from AWS Gateway and Lambda to
 Docker and EC2 instances once scale is large enough where the money savings justifies

@@ -1,12 +1,12 @@
 {
-  "name": "test_project_1",
+  "name": "Express-Serverless-REST-API-Base-Project",
   "version": "1.0.0",
-  "description": "Learning",
+  "description": "Launch Express REST API Service using Serverless ",
   "main": "src/server.js",
   "config": {
-    "localPath": "http://localhost:3000",
-    "devPath": "https://u8ts2erx64.execute-api.us-east-1.amazonaws.com/dev",
-    "gammaPath": "https://vdre8soovb.execute-api.us-east-1.amazonaws.com/gamma",
+    "localPath": "",
+    "devPath": "",
+    "gammaPath": "",
     "prodPath": ""
   },
   "scripts": {
@@ -20,15 +20,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/derekgebhard/test_project_1.git"
+    "url": "git+https://github.com/derekgebhard/Express-Serverless-REST-API-Base-Project.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/derekgebhard/test_project_1/issues"
+    "url": "https://github.com/derekgebhard/Express-Serverless-REST-API-Base-Project/issues"
   },
-  "homepage": "https://github.com/derekgebhard/test_project_1#readme",
+  "homepage": "https://github.com/derekgebhard/Express-Serverless-REST-API-Base-Project#readme",
   "dependencies": {
     "express": "^4.16.4",
     "joi": "^14.1.0",

@@ -17,9 +17,9 @@ cd ..
 rm -rf old-repository.git
 
 
-Step 4: Pull down your Git Repo (Clone repo locally)
+Step 4: Pull down your Git Repo (clone repo locally) and install dependencies
 git clone <URL for Git repo. ex: https://github.com/derekgebhard/your_project_name.git>
-
+npm install
 
 Step 5: Setup AWS Account(s)
 https://aws.amazon.com/s/dm/optimization/server-side-test/free-tier/free_np/
@@ -43,7 +43,7 @@ Note: Never check in credentials to GIT
 
 
 Step 8: Change Service Name/Git Location to Your Project Name and Location
-Name: serverless.yml line 3, package.json line 2
+Name: serverless.yml line 3, package.json line 2, README.md line 1
 Description: package.json line 4, README.md
 Git Info: package.json line 23, 27, 29, 31
 
