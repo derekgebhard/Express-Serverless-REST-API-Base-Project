@@ -1,0 +1,8 @@
+# Serverless Build Files
+.serverless
+
+# Dependency directories
+node_modules/
+
+# Coverage directory used by Jest/Istanbul
+coverage/
