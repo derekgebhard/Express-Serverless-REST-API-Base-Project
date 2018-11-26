@@ -1,0 +1,59 @@
+### How To: Add code coverage, unit testing, integration testing ###
+
+Step 1: Setup Jest and SuperTest (used for all three of these)
+npm install --save-dev jest supertest
+
+
+Step 2: Create Unit Tests for HelloWorld Route Logic
+mkdir unitTests
+touch unitTests/routes/helloworld.test.js
+Content: See "unitTests/routes/helloworld.test.js"
+
+
+Step 3: Update NPM package to support running Unit Tests and Calculating Code Coverage
+Update package.json to include:
+    "scripts": {
+      "test": "jest unitTests/*",
+      "coverage": "jest --collectCoverageFrom=src/**.js --collectCoverageFrom=!src/server.js --coverage unitTests/*",
+    }
+
+
+Step 4: Setup GIT IGNORE to prevent unnecessary coverage files being checked in
+Update .gitignore
+Content:
+    # Coverage directory used by Jest/Istanbul
+    coverage/
+
+
+Step 5: Running Unit Tests
+npm test
+
+
+Step 6: Running Code Coverage Calculation
+npm run coverage
+
+
+Step 7: Create Integration Tests that run via Jest
+mkdir integrationTests
+touch integrationTests/server.test.js
+Content: See "integrationTests/server.test.js"
+
+
+Step 8: Update NPM package to support running Integration Tests
+Update package.json with following: replace paths with ones of your app
+  "config": {
+    "localPath": "http://localhost:3000",
+    "devPath": "https://jcwulczzc2.execute-api.us-east-1.amazonaws.com/dev",
+    "gammaPath": "https://vdre8soovb.execute-api.us-east-1.amazonaws.com/gamma",
+    "prodPath": ""
+  },
+  "scripts": {
+    "localIntegrationTests": "SERVER_PATH=$npm_package_config_localPath jest integrationTests/*",
+    "devIntegrationTests": "SERVER_PATH=$npm_package_config_devPath jest integrationTests/*",
+    "gammaIntegrationTests": "SERVER_PATH=$npm_package_config_gammaPath jest integrationTests/*",
+    "prodIntegrationTests": "SERVER_PATH=$npm_package_config_prodPath jest integrationTests/*"
+  }
+
+
+Step 9: Running Integration Tests
+npm run <localIntegrationTests/devIntegrationTests/gammaIntegrationTests/prodIntegrationTests>

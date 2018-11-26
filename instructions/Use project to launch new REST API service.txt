@@ -1,0 +1,75 @@
+### How To: Launch new REST service project using this as base  ###
+
+Step 1: Make sure you have required tools on development machine
+See "Configuring required tooling.txt" file
+
+
+Step 2: Create New GitHub or Git Project
+Ex: https://github.com/ -> Login -> + New Repository
+
+
+Step 3: Copy or Mirror "Express Serverless REST API Base Project" Git Repo as starting point
+mkdir BaseRESTServiceProject && cd BaseRESTServiceProject
+git clone --bare https://github.com/derekgebhard/project_name.git
+cd old-repository.git
+git push --mirror https://github.com/exampleuser/new-repository.git
+cd ..
+rm -rf old-repository.git
+
+
+Step 4: Pull down your Git Repo (Clone repo locally)
+git clone <URL for Git repo. ex: https://github.com/derekgebhard/your_project_name.git>
+
+
+Step 5: Setup AWS Account(s)
+https://aws.amazon.com/s/dm/optimization/server-side-test/free-tier/free_np/
+Note: You can either do separate ones for each stage (dev, gamma, prod) which is typical or
+a single AWS account for all stages.
+
+
+Step 6: Configure AWS Credentials and IAM accounts for each AWS Account
+Details: https://serverless.com/framework/docs/providers/aws/guide/credentials/
+Navigate to AWS Console -> IAM
+Create New User with programmatic access and Admin Privileges
+Note: Never check in credentials to GIT
+
+
+Step 7: Setup AWS Creds on machine (Severless uses to deploy and work)
+Requires AWS CLI
+Run "aws configure" and "aws configure --profile <profile name ex:devo>" to setup credentials locally
+You will need to do this configure command for devo, gamma, prod profiles for all stages to work.
+You may want to make note of your credentials for other devs that will work on project.
+Note: Never check in credentials to GIT
+
+
+Step 8: Change Service Name/Git Location to Your Project Name and Location
+Name: serverless.yml line 3, package.json line 2
+Description: package.json line 4, README.md
+Git Info: package.json line 23, 27, 29, 31
+
+
+Step 9: Setup Stages
+sls offline start, sls deploy --stage dev, sls deploy --stage gamma, sls deploy --stage prod
+Make note of all the REST service paths for each stage from console of these commands
+Update package.json lines 7-10 with paths for each stage. These are used for integration tests.
+    "config": {
+      "localPath": "http://localhost:3000",
+      "devPath": "https://u8ts2erx64.execute-api.us-east-1.amazonaws.com/dev",
+      "gammaPath": "https://vdre8soovb.execute-api.us-east-1.amazonaws.com/gamma",
+      "prodPath": ""
+    }
+You can check everything is working for each stage with integration tests
+npm run <localIntegrationTests or devIntegrationTests or gammaIntegrationTests or prodIntegrationTests>
+Note: You may want to hold off on prod until you are ready for production given it has small recurring
+charges to keep lambda's warm. You can remove app and AWS resources via: sls remove (same as severless remove) and
+sls remove --stage prod
+
+
+Step 9: Commit Your Changes
+git add *
+git commit -m "Initial REST API Service Setup"
+git push origin
+
+
+Stp 10: You are now ready to Make, Commit, and Deploy Changes
+See "Make and deploy service changes.txt" file

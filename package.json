@@ -1,0 +1,48 @@
+{
+  "name": "test_project_1",
+  "version": "1.0.0",
+  "description": "Learning",
+  "main": "src/server.js",
+  "config": {
+    "localPath": "http://localhost:3000",
+    "devPath": "https://u8ts2erx64.execute-api.us-east-1.amazonaws.com/dev",
+    "gammaPath": "https://vdre8soovb.execute-api.us-east-1.amazonaws.com/gamma",
+    "prodPath": ""
+  },
+  "scripts": {
+    "pretest": "eslint --ignore-path .gitignore .",
+    "test": "jest unitTests/*",
+    "coverage": "jest --collectCoverageFrom=src/**.js --collectCoverageFrom=!src/server.js --coverage unitTests/*",
+    "localIntegrationTests": "SERVER_PATH=$npm_package_config_localPath jest integrationTests/*",
+    "devIntegrationTests": "SERVER_PATH=$npm_package_config_devPath jest integrationTests/*",
+    "gammaIntegrationTests": "SERVER_PATH=$npm_package_config_gammaPath jest integrationTests/*",
+    "prodIntegrationTests": "SERVER_PATH=$npm_package_config_prodPath jest integrationTests/*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/derekgebhard/test_project_1.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/derekgebhard/test_project_1/issues"
+  },
+  "homepage": "https://github.com/derekgebhard/test_project_1#readme",
+  "dependencies": {
+    "express": "^4.16.4",
+    "joi": "^14.1.0",
+    "serverless-http": "^1.8.0",
+    "winston": "^3.1.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.9.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jest": "^22.0.0",
+    "jest": "^23.6.0",
+    "serverless-offline": "^3.31.3",
+    "serverless-plugin-warmup": "^4.2.0-rc.1",
+    "supertest": "^3.3.0"
+  }
+}

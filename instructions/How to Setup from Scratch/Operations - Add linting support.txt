@@ -1,0 +1,46 @@
+### How To: Adding linting support ###
+
+Step 1: Setup required dependencies (ESLint)
+npm install --save-dev eslint
+
+
+Step 2: Configure ESLint
+./node_modules/.bin/eslint --init
+   -- Select Use a popular style guide
+   -- AIRBNB
+   -- REACT : N
+   -- Format of Config file: JavaScript
+   -- Would you like to install dependencies: Y
+
+
+Step 3: Add support for Jest not throwing Lint Errors
+To Support Jest:(
+npm install --save-dev eslint-plugin-jest
+Update .eslintrc.js
+  "plugins": ["jest"],
+  "env": {
+    "jest/globals": true
+  }
+
+
+Step 4: Support running lint as a pre-step to unit tests
+To support running as a part of "npm test" command, update package.json
+"scripts": {
+  "pretest": "eslint --ignore-path .gitignore .",
+}
+
+
+Step 5: Running lint
+npm test
+
+
+Step 6: Support for ATOM showing lint errors real time
+For Atom Setup:
+ Go to: Atom -> Preferences -> +Install
+ Search and install linter-eslint 8.4.1 (it will prompt you to install required following
+ dependencies: linter 2.2.0, linter-ui-default, busy-signal, intentions)
+
+
+Step 7: Customizing lint errors
+You can override and customize what causes blocking lint errors from the base
+AirBnB config. See file ".eslintrc.js". Documentation at: https://eslint.org/docs/rules/

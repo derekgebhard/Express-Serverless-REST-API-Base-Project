@@ -1,0 +1,44 @@
+### How To: Keep Lamdba warm for low latency ###
+
+Why?
+Lambdas have to be loaded by AWS before execution. This takes time if they haven't been used recently and are
+not in AWS' cache and adds to latency for customers. To solve this you can call your unique lambda's every 5 minutes to
+keep them in the cache and warm
+
+
+Step 1: Install serverless plugin to do this for us
+npm install --save-dev serverless-plugin-warmup
+Details of plugin at: https://github.com/FidelLimited/serverless-plugin-warmup
+
+
+Step 2: Setup plugin configuration in serverless.yml
+Add Plugin to serverless.yml
+plugins:
+  - serverless-plugin-warmup
+
+Update to run on specific stage:
+custom:
+  warmup:
+    default: prod
+    prewarm: prod
+
+
+Step 3: Update route handler to end early for these warm up requests to not waste
+processing time and save costs.
+// Exit early for lambda warm requests. IP always provided on requests through API Gateway
+if (!req.ip) {
+  return res.send();
+}
+
+Analysis of Express Serverless framework for request attribute to identify warmup requests:
+1. ip is missing (req.ip, client.remoteAddress, connection.remoteAddress, socket.remoteAddress)
+2. baseUrl ("", "/de") and originalUrl ("/", "/dev") are different
+3. headers are different:
+    warmup just has: "content-length": 0
+    regular call has: "accept", "cloudfront-forwarded-proto", "cloudfront-is-desktop-viewer", "cloudfront-is-mobile-viewer",
+    "cloudfront-is-smarttv-viewer", "cloudfront-is-tablet-viewer", "cloudfront-viewer-country", "vjc3w6fhm3.execute-api.us-east-1.amazonaws.com",
+    "user-agent", "via", "x-amz-cf-id", "x-amzn-trace-id", "x-forwarded-for", "x-forwarded-port", "x-forwarded-proto",
+    "content-length", "x-request-id"
+Used IP given APIGateway provides it from TCP connection and it isn't provided for cloudwatch event invocation.
+Don't see possibility of APIGateway removing IP given security use cases. Cloudwatch Events could end up getting IP
+added but that would just result in a 400 or 500 response so not a lot of risk in this approach.

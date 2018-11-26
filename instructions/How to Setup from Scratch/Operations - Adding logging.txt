@@ -1,0 +1,42 @@
+### How To: Adding logging ###
+
+Step 1: Install Winston library to use for logging
+npm install --save winston
+
+
+Step 2: Create Logger Utility that will be used for all service logging logic
+touch src/utils/logger.js
+Content: See file "src/utils/logger.js "
+This file uses Winston to log to the console so the logs are picked up by CloudWatch.
+It logs the following:
+a. Logs all incoming HTTP requests
+b. Logs all outgoing responses to HTTP requests
+c. Logging all errors
+d. Logging request ID for all log entries
+
+
+Step 3: Setup Middleware for HTTP Request/Response Logging
+We can hook into Express using middleware function in Logger Util to log all
+incoming HTTP requests and responses.
+Modify src/server.js
+Add Content before any route handlers:
+    app.use(logger.httpLogger);
+
+
+Step 4: Setup Middleware for Error Logging
+Just like for HTTP logging, we can hook into Express using middleware function in Logger Util to log all
+unexpected errors.
+Modify src/server.js
+Add Content before any route handlers:
+    app.use(logger.errorLogger);
+
+
+Step 5: Supporting custom logs using Logger Utility
+Accessing log utility: const logger = require('../utils/logger');
+Writing a log message: logger.debug(`Parsed name: ${name} from query params`, data, req);
+
+
+Step 6: Accessing logs
+Terminal Command: sls logs -f <function> and sls logs -f <function> --tail
+AWS Console: Navigate to CloudWatch in Console. Click Logs from Left Panel. You will see a set of log groups which are by service, stage, function.
+You can search across all logs for a these groups by clicking "Search Log Group". Ex: { $.level = "error" }

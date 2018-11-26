@@ -1,0 +1,31 @@
+### How To: Adding error handling ###
+
+Step 1: Create Error Utility that will be used for all service error logic
+touch src/utils/errors.js
+Content: See file "src/utils/errors.js "
+This file has logic for:
+a. Creating standard format for error responses
+b. Handling invalid routes
+c. Handling unexpected errors
+
+
+Step 2: Setup Middleware for Invalid Route
+We can hook into Express using middleware function in Errors Util to handle any
+invalid routes.
+Modify src/server.js
+Add Content after all route handlers to catch any paths not handled:
+    app.use(errors.invalidRoute);
+
+
+Step 3: Setup Middleware for Unexpected Errors
+Just like for invalid routes, we can hook into Express using middleware function in Error Util to log all
+unexpected errors.
+Modify src/server.js
+Add Content as last item in Express app:
+    app.use(errors.errorHandler);
+
+
+Step 4: Using Error Utility to respond to request with error message
+Accessing error utility: const errors = require('../utils/errors');
+Responding with invalid request: return errors.sendInvalidArgsResponse(res, error.message);
+Responding with error message: return errors.sendInvalidArgsResponse(res, 429, error.message);

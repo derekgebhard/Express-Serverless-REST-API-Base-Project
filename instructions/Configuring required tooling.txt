@@ -1,0 +1,13 @@
+### How To: Configuring Required Tooling ###
+
+Step 1: Install editor of choice
+By popularity: Atom, Brackets, Notepad++, I use Atom
+
+Step 2: Install Node JS
+https://nodejs.org/en/
+
+Step 3: Install Serverless
+npm install -g serverless
+
+Step 4: Install AWS CLI
+Install AWS CLI (https://docs.aws.amazon.com/cli/latest/userguide/installing.html)

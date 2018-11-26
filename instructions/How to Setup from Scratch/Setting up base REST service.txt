@@ -1,0 +1,93 @@
+### How To: Setup Express REST API Service using Serverless ###
+
+Step 1: Create New GitHub Repo
+https://github.com/ -> Login -> + New Repository
+
+
+Step 2: Clone GitHub Repo
+git clone <URL for GitHub repo. https://github.com/derekgebhard/test_project_1.git>
+
+
+Step 3: Create NPM project package.json
+cd <GitHub Project Folder>
+npm init -f
+
+
+Step 4: Install Dependencies
+npm install --save express serverless-http
+
+
+Step 5: Create your server.js and routes to handle requests
+touch src/server.js
+Contents:
+    const serverless = require('serverless-http');
+    const express = require('express')
+    const app = express()
+
+    const helloworldRoutes = require('./routes/helloworld')
+    app.get('/', helloworldRoutes.hello);
+
+    module.exports.handler = serverless(app);
+touch src/routes/helloworld.js
+    module.exports = {
+      getHello: (req, res, next) => {
+        // Logic for constructing hello message
+        const { name } = req.query;
+        const helloMsg = `Hello ${name}!`;
+
+        // Construct HTTP Response
+        return res.json({ message: helloMsg });
+      },
+    };
+Notes:
+     Same as Express app (https://expressjs.com/en/starter/hello-world.html) with two changes:
+        (1) import serverless-http at top
+        (2) We exported a handler function which is our application wrapped in the serverless package
+
+
+Step 6: Setup severless.yml
+touch serverless.yml
+    service: test-project-1
+
+    provider:
+      name: aws
+      runtime: nodejs8.10
+      region: us-east-1
+      stage: ${opt:stage, self:custom.defaultStage}
+      profile: ${self:custom.profiles.${self:provider.stage}}
+
+    custom:
+      defaultStage: dev
+      profiles:
+        dev: devo
+        gamma: gamma
+        prod: prod
+
+    functions:
+      app:
+        handler: src/server.handler
+        events:
+          - http: ANY /
+          - http: 'ANY {proxy+}'
+
+
+Step 7: Add support for local testing of service without AWS resources
+Install plugin: npm install --save-dev serverless-offline
+Add to serverless.yml
+  plugins:
+    - serverless-offline
+
+
+Step 8: Setup GIT IGNORE to prevent unnecessary files getting checked in
+touch .gitignore
+Content:
+    # Serverless Build Files
+    .serverless
+    # Dependency directories
+    node_modules/
+
+
+Step 9: Run application locally
+sls offline start
+It will tell you the local url which will likely be: http://localhost:3000
+You can call service and test via curl http://localhost:3000?name=John

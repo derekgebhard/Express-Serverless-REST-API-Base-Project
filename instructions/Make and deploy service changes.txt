@@ -1,0 +1,49 @@
+### How To: Make and Deploy Service Changes ###
+
+Step 1: Make Code Changes
+a. Modify your supported REST API paths/routes in src/server.js
+b. Add your route handlers in src/routes
+c. Add any models/business logic/etc in src
+d. Add Unit Tests under unitTests/ using convention filename.test.js
+e. Update integration tests in integrationTests/server.test.js
+
+
+Step 2: Check that latest changes pass all Unit Tests and hit code coverage bar
+a. npm test
+b. Check that latest changes have code coverage:
+   npm run coverage
+
+
+Step 3: Check latest changes pass local integration tests
+sls offline start
+npm run localIntegrationTests
+
+
+Step 4: Commit Code to Git Repo
+git add *
+git commit -m "Commit Message"
+git push origin master
+Note: This will change depending on branching, release management strategy
+
+
+Step 5. Deploy Service to Dev and sure Integration Tests Pass
+Navigate to code to deploy to dev
+sls deploy --stage dev
+npm run devIntegrationTests
+
+
+Step 6: Deploy Service to Gamma  and sure Integration Tests Pass
+sls deploy --stage gamma
+npm run gammaIntegrationTests
+
+
+Step 7: Deploy Service to Prod. Validate prod is working properly
+a. Deploy: sls deploy --stage prod
+b. Check Integration Tests Pass: npm run prodIntegrationTests
+c. Keep Monitoring Dashboards: Coming Soon
+d. Keep Monitoring Logs: AWS Console -> CloudWatch -> Logs -> Click LogGroup:
+"	/aws/lambda/<serviceName>-prod-app"
+
+ROLLING BACK PRODUCTION SHOULD ANY ISSUES HAPPEN:
+sls deploy list --stage prod
+serverless rollback --timestamp <timestamp>
