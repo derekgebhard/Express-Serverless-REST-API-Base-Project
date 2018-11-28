@@ -13,11 +13,6 @@ const helloSchema = joi.object().keys({
 
 module.exports = {
   getHello: (req, res, next) => {
-    // Exit early for lambda warm requests. IP always provided on requests through API Gateway
-    if (!req.ip) {
-      return res.send();
-    }
-
     // Check HTTP Input matches expectations
     const { error } = joi.validate(req.query, helloSchema, { abortEarly: false });
     if (error) {

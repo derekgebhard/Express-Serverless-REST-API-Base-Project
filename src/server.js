@@ -16,4 +16,11 @@ app.use(errors.invalidRoute); // Must occur after all route handlers
 app.use(logger.errorLogger); // Must be before any error handlers
 app.use(errors.errorHandler);
 
-module.exports.handler = serverless(app);
+module.exports.handler = function (event, context, callback) {
+  // Immediate response for WarmUP plugin to save costs/resourcing
+  if (event.source === 'serverless-plugin-warmup') {
+    logger.info('Received Lambda WarmUp Call');
+    return callback(null, 'Lambda is warm');
+  }
+  return serverless(app)(event, context, callback);
+};

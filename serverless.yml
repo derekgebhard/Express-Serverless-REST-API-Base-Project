@@ -43,9 +43,13 @@ custom:
     dev: debug
     gamma: info
     prod: info
+  warmPostDeploy:
+    dev: false
+    gamma: false
+    prod: true
   warmup:
     default: prod
-    prewarm: prod
+    prewarm: ${self:custom.warmPostDeploy.${self:provider.stage}}
 
 functions:
   app:

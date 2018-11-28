@@ -16,11 +16,14 @@ Add Plugin to serverless.yml
 plugins:
   - serverless-plugin-warmup
 
-Update to run on specific stage:
-custom:
+Update to run on specific stage under custom:
+  warmPostDeploy:
+    dev: false
+    gamma: false
+    prod: true
   warmup:
     default: prod
-    prewarm: prod
+    prewarm: ${self:custom.warmPostDeploy.${self:provider.stage}}
 
 Step 8: Setup GIT IGNORE to prevent unnecessary files getting checked in from plugin
 Modify .gitignore file
@@ -29,22 +32,14 @@ Add Content:
     _warmup/
 
 
-Step 3: Update route handler to end early for these warm up requests to not waste
+Step 3: Update app to end early and not process express handler for these warm up requests to not waste
 processing time and save costs.
-// Exit early for lambda warm requests. IP always provided on requests through API Gateway
-if (!req.ip) {
-  return res.send();
-}
-
-Analysis of Express Serverless framework for request attribute to identify warmup requests:
-1. ip is missing (req.ip, client.remoteAddress, connection.remoteAddress, socket.remoteAddress)
-2. baseUrl ("", "/de") and originalUrl ("/", "/dev") are different
-3. headers are different:
-    warmup just has: "content-length": 0
-    regular call has: "accept", "cloudfront-forwarded-proto", "cloudfront-is-desktop-viewer", "cloudfront-is-mobile-viewer",
-    "cloudfront-is-smarttv-viewer", "cloudfront-is-tablet-viewer", "cloudfront-viewer-country", "vjc3w6fhm3.execute-api.us-east-1.amazonaws.com",
-    "user-agent", "via", "x-amz-cf-id", "x-amzn-trace-id", "x-forwarded-for", "x-forwarded-port", "x-forwarded-proto",
-    "content-length", "x-request-id"
-Used IP given APIGateway provides it from TCP connection and it isn't provided for cloudwatch event invocation.
-Don't see possibility of APIGateway removing IP given security use cases. Cloudwatch Events could end up getting IP
-added but that would just result in a 400 or 500 response so not a lot of risk in this approach.
+See src/server.js file.
+  module.exports.handler = function (event, context, callback) {
+    // Immediate response for WarmUP plugin to save costs/resourcing
+    if (event.source === 'serverless-plugin-warmup') {
+      logger.info('Received Lambda WarmUp Call');
+      return callback(null, 'Lambda is warm');
+    }
+    return serverless(app)(event, context, callback);
+  };

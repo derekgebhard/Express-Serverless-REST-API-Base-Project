@@ -71,13 +71,4 @@ describe('Test Cases for helloworld routes', () => {
     expect(res.json.mock.calls.length).toBe(1);
     expect(res.json.mock.calls[0][0].message).toBe('Hello John!');
   });
-
-  test('Test Warmup request handling', () => {
-    const req = {
-    };
-    const res = getResponseMock();
-    helloworldRoutes.getHello(req, res);
-    expect(res.send.mock.calls.length).toBe(1);
-    expect(res.send.mock.calls[0][0]).not.toBeDefined();
-  });
 });
