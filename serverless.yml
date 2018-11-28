@@ -1,6 +1,6 @@
 # serverless.yml
 
-service: Express-Serverless-REST-API-Base-Project
+service: ExpressServerlessRESTAPI
 
 plugins:
   - serverless-offline
@@ -26,6 +26,8 @@ provider:
           - Ref: AWS::Region
           - Ref: AWS::AccountId
           - function:${self:service}-${opt:stage, self:provider.stage}-*
+  # Allow for Cloud Formation variables both Sub with resources named AWS and AWS:: variables, see https://serverless.com/framework/docs/providers/aws/guide/variables#using-custom-variable-syntax
+  variableSyntax: "\\${(?!AWS)([ :a-zA-Z0-9._,\\-\\/\\(\\)]+?)}"
 
 custom:
   defaultStage: dev
@@ -58,3 +60,8 @@ package: # Optional deployment packaging configuration
     - coverage/**
     - integrationTests/**
     - unitTests/**
+
+resources:  # CloudFormation template syntax
+  - Conditions:
+      IsProd: !Equals [ "${self:provider.stage}", "prod" ]
+  - ${file(resources/cloudwatch-alarms-dashboards.yml)}

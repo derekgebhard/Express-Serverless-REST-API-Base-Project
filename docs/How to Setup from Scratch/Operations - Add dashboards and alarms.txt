@@ -1,0 +1,50 @@
+### How To: Adding dashboards and alarms ###
+
+This setup provides you with the following for production stage only:
+1) Alarms for Volume (to avoid unexpected costs), Fatals (5XXs), and P50/90 Latency.
+2) Dashboard 5 minute metrics for above alarms and 4XX responses.
+3) Dashboard with same metrics as #3 but uses daily data points
+
+You can customize all of these in resources/cloudwatch-alarms-dashboards.yml. You can
+find all of these under AWS -> CloudWatch. For dashboards you might need to set the appropriate
+time interval on the dashboard (not customize via CloudFormation). Daily needs to be set for 1W
+or greater. 5 minutes make sense for 3h or short period of time.
+
+Steps for setup from scratch:
+
+Step 1: Setup CloudFormation script to create AWS resources for alarms and dashboards
+Add new folder "resources" to house CloudFormation scripts
+Add file "cloudwatch-alarms-dashboards.yml" for creating dashboards and alarms on SLS deploy
+Modify serverless.yml to add resources section as below.
+  resources:  # CloudFormation template syntax
+    - Conditions:
+        IsProd: !Equals [ "${self:provider.stage}", "prod" ]
+    - ${file(resources/cloudwatch-alarms-dashboards.yml)}
+
+
+Step 2: Setup AWS Systems Manager Parameter Store for Alarm Notification Contact
+To hide our contact info from public repos we can use Parameter Store. Sign into AWS Console.
+Navigate to Systems Manager. Click Parameter Store in Left Menu under Shared Resources.
+Click Create Parameter. For name use AlarmEmail. Keep type as String and enter your preferred email
+for Alarms in value. Click Create parameter.
+Note: I forward my emails to my phone's text messages via provider text email address. You can also change the
+cloudformation script to sms for "-protocol" on line 7 and replace the email with your mobile phone #.
+
+
+Step 3: Add Script to Create Alarms
+See AWSAlarmNotification, AWSHighVolumeAlarm, AWSFatalsAlarm, AWSLatencyP50Alarm, AWSLatencyP90Alarm resources
+in "resources/cloudwatch-alarms-dashboards.yml" file.
+
+Step 4: Add Script to Create Dashboards
+See AWSOperations5minDashboard and AWSOperationsDailyDashboard resources in
+"resources/cloudwatch-alarms-dashboards.yml" file.  We use the previous alarms
+to render metric graphs on AWSOperations5minDashboard. This gives us our redline
+automatically and lets us easily see if we are in alarm. To do this we need to use
+AWS variables which have the same syntax as Serverless (${AWSFatalsAlarm.Arn}).
+Serverless throws errors that these are not valid variables. To solve this we update
+Serverless.yml with the following content. This tells serveress to allow and ignore
+any of these variables if they start with AWS. This also means resource names have
+to start with AWS to be referenced this way.
+    under provider add:
+      # Allow for Cloud Formation variables both Sub with resources named AWS and AWS:: variables, see https://serverless.com/framework/docs/providers/aws/guide/variables#using-custom-variable-syntax
+      variableSyntax: "\\${(?!AWS)([ :a-zA-Z0-9._,\\-\\/\\(\\)]+?)}"
