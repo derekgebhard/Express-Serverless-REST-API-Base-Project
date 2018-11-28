@@ -8,17 +8,17 @@ Step 2: Create New GitHub or Git Project
 Ex: https://github.com/ -> Login -> + New Repository
 
 
-Step 3: Copy or Mirror "Express Serverless REST API Base Project" Git Repo as starting point
-mkdir BaseRESTServiceProject && cd BaseRESTServiceProject
-git clone --bare https://github.com/derekgebhard/project_name.git
-cd old-repository.git
-git push --mirror https://github.com/exampleuser/new-repository.git
-cd ..
-rm -rf old-repository.git
+Step 3: Copy "Express Serverless REST API Base Project" as starting point
+git clone https://github.com/derekgebhard/Express-Serverless-REST-API-Base-Project
+git clone <URL to your Git/GitHub Repo>
+cd Express-Serverless-REST-API-Base-Project
+cp -r .eslintrc.js .gitignore package.json package-lock.json README.md serverless.yml src unitTests resources integrationTests <Path to Your New Git Directory>
+cd <Path to Your New Git Directory>
+git add * .eslintrc.js .gitignore
+git commit -m "Starting Express Serverless REST API Base Project"
+git push origin
 
-
-Step 4: Pull down your Git Repo (clone repo locally) and install dependencies
-git clone <URL for Git repo. ex: https://github.com/derekgebhard/your_project_name.git>
+Step 4: Install dependencies
 npm install
 
 Step 5: Setup AWS Account(s)
@@ -38,20 +38,22 @@ Step 7: Setup AWS Creds on machine (Severless uses to deploy and work)
 Requires AWS CLI
 Run "aws configure" and "aws configure --profile <profile name ex:devo>" to setup credentials locally
 You will need to do this configure command for devo, gamma, prod profiles for all stages to work.
-You may want to make note of your credentials for other devs that will work on project.
+You may want to make note of your credentials for other devs that will work on project. These are the
+same credentials associated with IAM user created in Step 6.
 Note: Never check in credentials to GIT
 
 
 Step 8: Add email address for alarms to either AWS Parameter Store or CloudFormation script
-Option1: Open resources/cloudwatch-alarms-dashboards.yml. Change line 8 from {{resolve:ssm:AlarmEmail:2}}
+Option1: Open resources/cloudwatch-alarms-dashboards.yml. Change line 8 from {{resolve:ssm:AlarmEmail:1}}
 to your email address. I would advise against this if checking into a public repo because it exposes
 this email address.
 Option 2: Add your email address to AWS -> System Manager -> Parameter Store.  Sign into AWS Console. Navigate to
 Systems Manager. Click Parameter Store in Left Menu under Shared Resources. Click Create Parameter. For name
-use AlarmEmail. Keep type as String and enter your preferred email for Alarms in value. Click Create parameter.
+use "AlarmEmail". Keep type as String and enter your preferred email for Alarms in value. Click Create parameter.
 You will receive a verification email to this address after initial deployment.
-Note: I forward my emails to my phone's text messages via provider text email address. You can also change the
-cloudformation script to sms for "-protocol" on line 7 and replace the email with your mobile phone #.
+Note: I forward my emails to my phone via text message using provider text email address. You can also change the
+cloudformation script to sms for "-protocol" on line 7 and replace the email with your mobile phone #. It will
+just cost more.
 
 
 Step 9: Change Service Name/Git Location to Your Project Name and Location
@@ -79,7 +81,7 @@ sls remove --stage prod
 
 Step 11: Commit Your Changes
 git add *
-git commit -m "Initial REST API Service Setup"
+git commit -m Modifying base REST API naming and description for this project"
 git push origin
 
 
